@@ -1,0 +1,632 @@
+basePath: /
+definitions:
+  model.Kategori:
+    properties:
+      id:
+        type: string
+      nama_kategori:
+        type: string
+    required:
+    - nama_kategori
+    type: object
+  model.Kegiatan:
+    properties:
+      created_by:
+        type: string
+      deskripsi:
+        type: string
+      dokumentasi_url:
+        type: string
+      id:
+        type: string
+      judul:
+        type: string
+      kategori:
+        type: string
+      lokasi:
+        type: string
+      tanggal:
+        type: string
+    required:
+    - judul
+    - tanggal
+    type: object
+  model.Kehadiran:
+    properties:
+      id:
+        type: string
+      kegiatan_id:
+        type: string
+      status:
+        enum:
+        - hadir
+        - tidak
+        type: string
+      user_id:
+        type: string
+      waktu_cek:
+        type: string
+    required:
+    - kegiatan_id
+    - status
+    - user_id
+    type: object
+  model.User:
+    properties:
+      email:
+        type: string
+      id:
+        type: string
+      nama:
+        maxLength: 100
+        minLength: 2
+        type: string
+      password:
+        minLength: 6
+        type: string
+      role:
+        enum:
+        - admin
+        - member
+        type: string
+      ukm:
+        type: string
+    required:
+    - email
+    - nama
+    - password
+    - role
+    - ukm
+    type: object
+host: localhost:3000
+info:
+  contact: {}
+  description: API untuk tugas besar backend Fiber + MongoDB
+  title: Sistem Informasi UKM Kampus API
+  version: "1.0"
+paths:
+  /kategori:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.Kategori'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get all kategori
+      tags:
+      - Kategori
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Kategori Data
+        in: body
+        name: kategori
+        required: true
+        schema:
+          $ref: '#/definitions/model.Kategori'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/model.Kategori'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Create kategori
+      tags:
+      - Kategori
+  /kategori/{id}:
+    delete:
+      parameters:
+      - description: Kategori ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Delete kategori
+      tags:
+      - Kategori
+    get:
+      parameters:
+      - description: Kategori ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Kategori'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get kategori by ID
+      tags:
+      - Kategori
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: Kategori ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Kategori Data
+        in: body
+        name: kategori
+        required: true
+        schema:
+          $ref: '#/definitions/model.Kategori'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Update kategori
+      tags:
+      - Kategori
+  /kegiatan:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.Kegiatan'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get all kegiatan
+      tags:
+      - Kegiatan
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Kegiatan Data
+        in: body
+        name: kegiatan
+        required: true
+        schema:
+          $ref: '#/definitions/model.Kegiatan'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/model.Kegiatan'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Create kegiatan
+      tags:
+      - Kegiatan
+  /kegiatan/{id}:
+    delete:
+      parameters:
+      - description: Kegiatan ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Delete kegiatan
+      tags:
+      - Kegiatan
+    get:
+      parameters:
+      - description: Kegiatan ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Kegiatan'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get kegiatan by ID
+      tags:
+      - Kegiatan
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: Kegiatan ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Kegiatan Data
+        in: body
+        name: kegiatan
+        required: true
+        schema:
+          $ref: '#/definitions/model.Kegiatan'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Update kegiatan
+      tags:
+      - Kegiatan
+  /kehadiran:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.Kehadiran'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get all kehadiran
+      tags:
+      - Kehadiran
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Kehadiran Data
+        in: body
+        name: kehadiran
+        required: true
+        schema:
+          $ref: '#/definitions/model.Kehadiran'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/model.Kehadiran'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Create kehadiran
+      tags:
+      - Kehadiran
+  /kehadiran/{id}:
+    delete:
+      parameters:
+      - description: Kehadiran ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Delete kehadiran
+      tags:
+      - Kehadiran
+    get:
+      parameters:
+      - description: Kehadiran ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Kehadiran'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get kehadiran by ID
+      tags:
+      - Kehadiran
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: Kehadiran ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Kehadiran Data
+        in: body
+        name: kehadiran
+        required: true
+        schema:
+          $ref: '#/definitions/model.Kehadiran'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Update kehadiran
+      tags:
+      - Kehadiran
+  /login:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Login Data
+        in: body
+        name: credentials
+        required: true
+        schema:
+          additionalProperties:
+            type: string
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Login user
+      tags:
+      - Auth
+  /register:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: User Data
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/model.User'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Register user
+      tags:
+      - Auth
+securityDefinitions:
+  BearerAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"
