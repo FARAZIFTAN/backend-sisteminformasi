@@ -16,6 +16,29 @@ import (
 
 var kegiatanValidate = validator.New()
 
+// Tambahkan struct response
+type KegiatanResponse struct {
+	ID              string `json:"id"`
+	Judul           string `json:"judul"`
+	Deskripsi       string `json:"deskripsi"`
+	Tanggal         string `json:"tanggal"`
+	Lokasi          string `json:"lokasi"`
+	Kategori        string `json:"kategori"`
+	MaxParticipants int    `json:"maxParticipants"`
+	DokumentasiURL  string `json:"dokumentasi_url"`
+	CreatedBy       string `json:"created_by"`
+}
+
+func safeObjectIDHex(id interface{}) string {
+	if oid, ok := id.(primitive.ObjectID); ok {
+		return oid.Hex()
+	}
+	if s, ok := id.(string); ok {
+		return s
+	}
+	return ""
+}
+
 // GetKegiatan godoc
 // @Summary Get all kegiatan
 // @Tags Kegiatan
@@ -31,11 +54,56 @@ func GetKegiatan(c *fiber.Ctx) error {
 	if err != nil {
 		return c.Status(500).JSON(fiber.Map{"error": "Failed to fetch kegiatan"})
 	}
-	var kegiatans []model.Kegiatan
-	if err := cursor.All(ctx, &kegiatans); err != nil {
+	var rawKegiatans []bson.M
+	if err := cursor.All(ctx, &rawKegiatans); err != nil {
 		return c.Status(500).JSON(fiber.Map{"error": "Failed to decode kegiatan"})
 	}
-	return c.JSON(kegiatans)
+	var responses []KegiatanResponse
+	for _, k := range rawKegiatans {
+		idStr := ""
+		if oid, ok := k["_id"].(primitive.ObjectID); ok {
+			idStr = oid.Hex()
+		} else if s, ok := k["_id"].(string); ok {
+			idStr = s
+		}
+		responses = append(responses, KegiatanResponse{
+			ID:              idStr,
+			Judul:           getStringFromMap(k, "judul"),
+			Deskripsi:       getStringFromMap(k, "deskripsi"),
+			Tanggal:         getStringFromMap(k, "tanggal"),
+			Lokasi:          getStringFromMap(k, "lokasi"),
+			Kategori:        getStringFromMap(k, "kategori"),
+			MaxParticipants: getIntFromMap(k, "maxParticipants"),
+			DokumentasiURL:  getStringFromMap(k, "dokumentasi_url"),
+			CreatedBy:       getStringFromMap(k, "created_by"),
+		})
+	}
+	return c.JSON(responses)
+}
+
+func getStringFromMap(m map[string]interface{}, key string) string {
+	if v, ok := m[key]; ok {
+		if s, ok := v.(string); ok {
+			return s
+		}
+	}
+	return ""
+}
+
+func getIntFromMap(m map[string]interface{}, key string) int {
+	if v, ok := m[key]; ok {
+		switch val := v.(type) {
+		case int:
+			return val
+		case int32:
+			return int(val)
+		case int64:
+			return int(val)
+		case float64:
+			return int(val)
+		}
+	}
+	return 0
 }
 
 // GetKegiatanByID godoc
@@ -65,7 +133,18 @@ func GetKegiatanByID(c *fiber.Ctx) error {
 		}
 		return c.Status(500).JSON(fiber.Map{"error": "Failed to fetch kegiatan"})
 	}
-	return c.JSON(kegiatan)
+	response := KegiatanResponse{
+		ID:              safeObjectIDHex(kegiatan.ID),
+		Judul:           kegiatan.Judul,
+		Deskripsi:       kegiatan.Deskripsi,
+		Tanggal:         kegiatan.Tanggal,
+		Lokasi:          kegiatan.Lokasi,
+		Kategori:        kegiatan.Kategori,
+		MaxParticipants: kegiatan.MaxParticipants,
+		DokumentasiURL:  kegiatan.DokumentasiURL,
+		CreatedBy:       kegiatan.CreatedBy,
+	}
+	return c.JSON(response)
 }
 
 // CreateKegiatan godoc
@@ -93,8 +172,19 @@ func CreateKegiatan(c *fiber.Ctx) error {
 	if err != nil {
 		return c.Status(500).JSON(fiber.Map{"error": "Failed to create kegiatan"})
 	}
-	kegiatan.ID = res.InsertedID.(primitive.ObjectID).Hex()
-	return c.Status(201).JSON(kegiatan)
+	kegiatan.ID = res.InsertedID.(primitive.ObjectID)
+	response := KegiatanResponse{
+		ID:              kegiatan.ID.Hex(),
+		Judul:           kegiatan.Judul,
+		Deskripsi:       kegiatan.Deskripsi,
+		Tanggal:         kegiatan.Tanggal,
+		Lokasi:          kegiatan.Lokasi,
+		Kategori:        kegiatan.Kategori,
+		MaxParticipants: kegiatan.MaxParticipants,
+		DokumentasiURL:  kegiatan.DokumentasiURL,
+		CreatedBy:       kegiatan.CreatedBy,
+	}
+	return c.Status(201).JSON(response)
 }
 
 // UpdateKegiatan godoc
