@@ -29,11 +29,11 @@ func GetKategori(c *fiber.Ctx) error {
 	defer cancel()
 	cursor, err := config.DB.Collection("kategori").Find(ctx, bson.M{})
 	if err != nil {
-		return c.Status(500).JSON(fiber.Map{"error": "Failed to fetch kategori"})
+		return c.Status(500).JSON(fiber.Map{"error": "Gagal mengambil kategori"})
 	}
 	var kategoris []model.Kategori
 	if err := cursor.All(ctx, &kategoris); err != nil {
-		return c.Status(500).JSON(fiber.Map{"error": "Failed to decode kategori"})
+		return c.Status(500).JSON(fiber.Map{"error": "Gagal decode kategori"})
 	}
 	return c.JSON(kategoris)
 }

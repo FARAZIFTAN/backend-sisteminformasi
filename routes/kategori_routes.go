@@ -14,3 +14,8 @@ func KategoriRoutes(app fiber.Router) {
 	app.Put("/kategori/:id", middleware.AuthRequired(), middleware.AdminOnly(), controller.UpdateKategori)
 	app.Delete("/kategori/:id", middleware.AuthRequired(), middleware.AdminOnly(), controller.DeleteKategori)
 }
+
+func RegisterKategoriRoutes(app *fiber.App) {
+	kategori := app.Group("/kategori")
+	kategori.Get("/", controller.GetKategori)
+}

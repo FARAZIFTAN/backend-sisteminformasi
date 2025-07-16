@@ -1,0 +1,13 @@
+[
+  { "nama_kategori": "PMK", "kategori_utama": "Agama" },
+  { "nama_kategori": "KMK", "kategori_utama": "Agama" },
+  { "nama_kategori": "Futsal", "kategori_utama": "Olahraga" },
+  { "nama_kategori": "Basket", "kategori_utama": "Olahraga" },
+  { "nama_kategori": "Voli", "kategori_utama": "Olahraga" },
+  { "nama_kategori": "Badminton", "kategori_utama": "Olahraga" },
+  { "nama_kategori": "Taekwondo", "kategori_utama": "Olahraga" },
+  { "nama_kategori": "English Club", "kategori_utama": "Akademik" },
+  { "nama_kategori": "Math Club", "kategori_utama": "Akademik" },
+  { "nama_kategori": "Teater", "kategori_utama": "Seni" },
+  { "nama_kategori": "Paduan Suara", "kategori_utama": "Seni" }
+]

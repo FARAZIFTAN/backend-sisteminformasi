@@ -129,8 +129,9 @@ func UpdateKegiatan(c *fiber.Ctx) error {
 		"deskripsi":       kegiatan.Deskripsi,
 		"tanggal":         kegiatan.Tanggal,
 		"lokasi":          kegiatan.Lokasi,
-		"dokumentasi_url": kegiatan.DokumentasiURL,
 		"kategori":        kegiatan.Kategori,
+		"maxParticipants": kegiatan.MaxParticipants,
+		"dokumentasi_url": kegiatan.DokumentasiURL,
 		"created_by":      kegiatan.CreatedBy,
 	}
 	_, err = config.DB.Collection("kegiatan").UpdateOne(ctx, bson.M{"_id": objID}, bson.M{"$set": update})
