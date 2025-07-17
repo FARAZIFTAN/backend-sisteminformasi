@@ -27,14 +27,67 @@ var kehadiranValidate = validator.New()
 func GetKehadiran(c *fiber.Ctx) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
-	cursor, err := config.DB.Collection("kehadiran").Find(ctx, bson.M{})
+
+	// Aggregation pipeline untuk JOIN dengan users dan kegiatan
+	pipeline := []bson.M{
+		{
+			"$addFields": bson.M{
+				"user_object_id": bson.M{
+					"$cond": bson.M{
+						"if":   bson.M{"$eq": []interface{}{bson.M{"$type": "$user_id"}, "string"}},
+						"then": bson.M{"$toObjectId": "$user_id"},
+						"else": "$user_id",
+					},
+				},
+				"kegiatan_object_id": bson.M{
+					"$cond": bson.M{
+						"if":   bson.M{"$eq": []interface{}{bson.M{"$type": "$kegiatan_id"}, "string"}},
+						"then": bson.M{"$toObjectId": "$kegiatan_id"},
+						"else": "$kegiatan_id",
+					},
+				},
+			},
+		},
+		{
+			"$lookup": bson.M{
+				"from":         "users",
+				"localField":   "user_object_id",
+				"foreignField": "_id",
+				"as":           "user_data",
+			},
+		},
+		{
+			"$lookup": bson.M{
+				"from":         "kegiatan",
+				"localField":   "kegiatan_object_id",
+				"foreignField": "_id",
+				"as":           "kegiatan_data",
+			},
+		},
+		{
+			"$project": bson.M{
+				"_id":           1,
+				"user_id":       1,
+				"kegiatan_id":   1,
+				"status":        1,
+				"waktu_cek":     1,
+				"user_nama":     bson.M{"$arrayElemAt": []interface{}{"$user_data.nama", 0}},
+				"kegiatan_nama": bson.M{"$arrayElemAt": []interface{}{"$kegiatan_data.judul", 0}},
+				"ukm":           bson.M{"$arrayElemAt": []interface{}{"$kegiatan_data.kategori", 0}},
+			},
+		},
+	}
+
+	cursor, err := config.DB.Collection("kehadiran").Aggregate(ctx, pipeline)
 	if err != nil {
 		return c.Status(500).JSON(fiber.Map{"error": "Failed to fetch kehadiran"})
 	}
-	var kehadirans []model.Kehadiran
+
+	var kehadirans []bson.M
 	if err := cursor.All(ctx, &kehadirans); err != nil {
 		return c.Status(500).JSON(fiber.Map{"error": "Failed to decode kehadiran"})
 	}
+
 	return c.JSON(kehadirans)
 }
 

@@ -10,4 +10,5 @@ func SetupRoutes(app *fiber.App) {
 	KegiatanRoutes(app)
 	KehadiranRoutes(app)
 	KategoriRoutes(app)
+	StatisticsRoutes(app)
 }
