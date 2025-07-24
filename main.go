@@ -12,6 +12,7 @@ import (
 	fiberswagger "github.com/swaggo/fiber-swagger"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/joho/godotenv"
 )
 
@@ -38,7 +39,11 @@ func main() {
 	app := fiber.New()
 
 	app.Use(middleware.Logger())
-	app.Use(middleware.Cors())
+	// Gunakan middleware CORS dengan konfigurasi yang benar
+	app.Use(cors.New(cors.Config{
+		AllowOrigins: "*",
+		AllowHeaders: "Origin, Content-Type, Accept, Authorization",
+	}))
 
 	// Swagger endpoint
 	app.Get("/swagger/*", fiberswagger.WrapHandler)
