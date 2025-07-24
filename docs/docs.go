@@ -1337,7 +1337,7 @@ const docTemplate = `{
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
 	Version:          "1.0",
-	Host:             "radiant-charm.up.railway.app",
+	Host:             "backend-sisteminformasi-production.up.railway.app",
 	BasePath:         "/",
 	Schemes:          []string{"http", "https"},
 	Title:            "Sistem Informasi UKM Kampus API",

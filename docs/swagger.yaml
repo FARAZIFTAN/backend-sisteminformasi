@@ -136,7 +136,7 @@ definitions:
     - role
     - ukm
     type: object
-host: radiant-charm.up.railway.app
+host: backend-sisteminformasi-production.up.railway.app
 info:
   contact: {}
   description: API untuk tugas besar backend Fiber + MongoDB

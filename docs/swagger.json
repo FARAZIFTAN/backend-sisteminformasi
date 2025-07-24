@@ -10,7 +10,7 @@
         "contact": {},
         "version": "1.0"
     },
-    "host": "radiant-charm.up.railway.app",
+    "host": "backend-sisteminformasi-production.up.railway.app",
     "basePath": "/",
     "paths": {
         "/kategori": {
