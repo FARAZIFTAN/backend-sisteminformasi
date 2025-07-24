@@ -38,8 +38,10 @@ func main() {
 
 	app := fiber.New()
 
+	// Logger middleware
 	app.Use(middleware.Logger())
-	// Gunakan middleware CORS dengan konfigurasi yang benar
+
+	// CORS middleware (hanya satu, konfigurasi sudah benar)
 	app.Use(cors.New(cors.Config{
 		AllowOrigins: "*",
 		AllowHeaders: "Origin, Content-Type, Accept, Authorization",
@@ -48,16 +50,17 @@ func main() {
 	// Swagger endpoint
 	app.Get("/swagger/*", fiberswagger.WrapHandler)
 
-		routes.SetupRoutes(app)
+	// Setup all routes
+	routes.SetupRoutes(app)
 
-		// Health check endpoint for Render
-		app.Get("/health", func(c *fiber.Ctx) error {
-				return c.SendString("OK")
-		})
+	// Health check endpoint for Railway/Render
+	app.Get("/health", func(c *fiber.Ctx) error {
+		return c.SendString("OK")
+	})
 
-		port := os.Getenv("PORT")
-		if port == "" {
-				port = "3000"
-		}
-		log.Fatal(app.Listen(":" + port))
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "3000"
+	}
+	log.Fatal(app.Listen(":" + port))
 }
