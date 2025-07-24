@@ -18,8 +18,9 @@ import (
 // @title Sistem Informasi UKM Kampus API
 // @version 1.0
 // @description API untuk tugas besar backend Fiber + MongoDB
-// @host localhost:3000
+// @host radiant-charm.up.railway.app
 // @BasePath /
+// @schemes http https
 // @securityDefinitions.apikey BearerAuth
 // @in header
 // @name Authorization

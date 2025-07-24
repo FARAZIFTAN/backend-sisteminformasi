@@ -1,13 +1,69 @@
 basePath: /
 definitions:
+  controller.ActivityStats:
+    properties:
+      attendees:
+        type: integer
+      date:
+        type: string
+      title:
+        type: string
+      ukm:
+        type: string
+    type: object
+  controller.MemberStats:
+    properties:
+      adminCount:
+        type: integer
+      memberCount:
+        type: integer
+      total:
+        type: integer
+      ukm:
+        type: string
+    type: object
+  controller.StatisticsResponse:
+    properties:
+      kegiatanByStatus:
+        additionalProperties:
+          type: integer
+        type: object
+      kegiatanByUkm:
+        items:
+          $ref: '#/definitions/controller.UkmStats'
+        type: array
+      membersByUkm:
+        items:
+          $ref: '#/definitions/controller.MemberStats'
+        type: array
+      recentActivities:
+        items:
+          $ref: '#/definitions/controller.ActivityStats'
+        type: array
+      totalAnggota:
+        type: integer
+      totalKegiatan:
+        type: integer
+      totalKehadiran:
+        type: integer
+    type: object
+  controller.UkmStats:
+    properties:
+      count:
+        type: integer
+      percentage:
+        type: number
+      ukm:
+        type: string
+    type: object
   model.Kategori:
     properties:
       id:
         type: string
+      kategori_utama:
+        type: string
       nama_kategori:
         type: string
-    required:
-    - nama_kategori
     type: object
   model.Kegiatan:
     properties:
@@ -25,6 +81,8 @@ definitions:
         type: string
       lokasi:
         type: string
+      maxParticipants:
+        type: integer
       tanggal:
         type: string
     required:
@@ -78,7 +136,7 @@ definitions:
     - role
     - ukm
     type: object
-host: localhost:3000
+host: radiant-charm.up.railway.app
 info:
   contact: {}
   description: API untuk tugas besar backend Fiber + MongoDB
@@ -624,6 +682,184 @@ paths:
       summary: Register user
       tags:
       - Auth
+  /statistics:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controller.StatisticsResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get statistics data
+      tags:
+      - Statistics
+  /users:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.User'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get all users
+      tags:
+      - Users
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: User Data
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/model.User'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/model.User'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Create user
+      tags:
+      - Users
+  /users/{id}:
+    delete:
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Delete user
+      tags:
+      - Users
+    get:
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.User'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get user by ID
+      tags:
+      - Users
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: User Data
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/model.User'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Update user
+      tags:
+      - Users
+schemes:
+- http
+- https
 securityDefinitions:
   BearerAuth:
     in: header
