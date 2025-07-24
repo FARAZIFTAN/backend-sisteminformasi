@@ -42,11 +42,16 @@ func main() {
 	// Swagger endpoint
 	app.Get("/swagger/*", fiberswagger.WrapHandler)
 
-	routes.SetupRoutes(app)
+		routes.SetupRoutes(app)
 
-	port := os.Getenv("PORT")
-	if port == "" {
-		port = "3000"
-	}
-	log.Fatal(app.Listen(":" + port))
+		// Health check endpoint for Render
+		app.Get("/health", func(c *fiber.Ctx) error {
+				return c.SendString("OK")
+		})
+
+		port := os.Getenv("PORT")
+		if port == "" {
+				port = "3000"
+		}
+		log.Fatal(app.Listen(":" + port))
 }
