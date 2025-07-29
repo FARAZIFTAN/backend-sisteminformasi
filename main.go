@@ -48,7 +48,7 @@ func main() {
 	}))
 
 	// Swagger endpoint
-	app.Get("/hilmi/*", fiberswagger.WrapHandler)
+	app.Get("/swagger/*", fiberswagger.WrapHandler)
 
 	// Setup all routes
 	routes.SetupRoutes(app)
